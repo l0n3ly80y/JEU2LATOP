@@ -4,7 +4,7 @@ import math
 import os
 from spriteloader import target
 #might be useful later
-
+vie=10
 
 #fps calculator
 from time import time
@@ -23,8 +23,7 @@ pygame.init()
 width ,height=800,600
 monEcran=pygame.display.set_mode((width ,height ))
 
-slime=target(10,10,0,0)
-vie=10
+
 max_speed=5
 touche=False
 resultat=False
@@ -40,12 +39,9 @@ while jeu_en_cours==True:
         touche=False
         resultat=True
         monClic=False
-        slime.posx=randint(1,width)# width est la largeur de la fenétre
-        slime.posy=randint(1,height)# height est la hauteur de la fenetre
-
-        rayon=randint(50,400)
-        slime.sizex=rayon
-        slime.sizey=rayon
+        posx=randint(1,width)# width est la largeur de la fenétre
+        posy=randint(1,height)# height est la hauteur de la fenetre
+        rayon=randint(10,100)
         #pallier de vitesse
         if score%5==0:
             max_speed+=1
@@ -56,8 +52,8 @@ while jeu_en_cours==True:
         yspeed=randint(-max_speed,max_speed)
     #deplacement du carre
     if cycle%100==0:
-        slime.posx+=xspeed
-        slime.posy+=yspeed
+        posx+=xspeed
+        posy+=yspeed
 
 
 
@@ -65,7 +61,7 @@ while jeu_en_cours==True:
 
     #mouseX,mouseY=pygame.mouse.get_pos()
     mouseX,mouseY=pygame.mouse.get_pos()
-    if slime.posx<mouseX<slime.posx+rayon and slime.posy<mouseY<slime.posy+rayon and monClic and resultat:
+    if posx<mouseX<posx+rayon and posy<mouseY<posy+rayon and monClic and resultat:
         if not touche:
             score+=1
         touche=True
@@ -93,8 +89,7 @@ while jeu_en_cours==True:
     afficherScore("vie : "+str(vie),score)
     #affichage des sprites
     if not touche:
-        #pygame.draw.rect(monEcran,(255, 255, 255),(posx,posy,rayon,rayon))
-        slime.update(monEcran)
+        pygame.draw.rect(monEcran,(255, 255, 255),(posx,posy,rayon,rayon))
 
     #a corriger
     for evenement in pygame.event.get():# Boucle sur les evenements
