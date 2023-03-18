@@ -2,14 +2,18 @@ from random import randint
 import pygame
 import math
 import os
-from spriteloader import target
+from spriteloader import *
+from time import sleep
 #might be useful later
 
 
 #fps calculator
 from time import time
+monClic=False
 FPScpt=0
 initTime=time()
+pygame.init()
+maPolice = pygame.font.SysFont('arial', 30) #Chargement de la police dans la variable maPolice
 def averageFPS():
     return FPScpt/(time()-initTime)
 def distance(xA,yA,xB,yB):
