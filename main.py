@@ -117,7 +117,10 @@ def game():
         pygame.display.update()
 
 #that's what's going on at the beginning of the script, basically the game menu
-if __name__ == '__main__':
+def menu():
+    #ca ce le theme du jeu
+    menu_theme=pygame.mixer.Sound('assets/sound_effects/menu_theme.wav')
+    menu_theme.play()
     initTime=time()
     pygame.init()
     play_button=playButton(100,100,0,0)
@@ -145,6 +148,7 @@ if __name__ == '__main__':
             if cycle_since_click%10==0:
                 print("[*] cycle since click :",cycle_since_click)
             if cycle_since_click>300:
+                menu_theme.stop()
                 game()
 
         for evenement in pygame.event.get():# Boucle sur les evenements
@@ -159,6 +163,9 @@ if __name__ == '__main__':
                 monClic=False
         #include following in the while loop
         pygame.display.update()
+if __name__ == '__main__':
+    menu()
+
 
 
 
