@@ -12,12 +12,35 @@ class target:
         self.img = pygame.image.load("slime.png")#.convert_alpha()
         self.scaled_img=pygame.transform.scale(self.img,(self.sizex,self.sizey) )
         self.sprite=self.scaled_img.convert_alpha()
+        self.dead=False
+        self.current_anim_frame=0
+        self.counter=0
+        #chargement des animations de mort
+        self.death_anim_sprites=[]
+        for i in range(1,9):
+            self.death_anim_sprites.append(pygame.image.load("assets/mort"+str(i)+".png"))
+            print("[**] list of sprites ",self.death_anim_sprites)
+
 
     def update(self,screen):
         size=(self.sizex,self.sizey)
         ##scaled_img=
-        self.sprite=pygame.transform.scale(self.img,size).convert_alpha()
-        screen.blit(self.sprite, (self.posx,self.posy))
+        if self.dead:
+            print("[*]current frame : "+str(self.current_anim_frame))
+            self.sprite=pygame.transform.scale(self.death_anim_sprites[self.current_anim_frame],size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+            self.counter+=1
+            if self.current_anim_frame==7:
+                self.counter=0
+                self.current_anim_frame=-1
+                self.dead=False
+            if self.counter%15==0:
+                self.current_anim_frame+=1
+
+        else:
+            i=1
+            self.sprite=pygame.transform.scale(self.img,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
 
 
 class playButton:

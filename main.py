@@ -14,6 +14,7 @@ FPScpt=0
 initTime=time()
 pygame.init()
 maPolice = pygame.font.SysFont('arial', 30) #Chargement de la police dans la variable maPolice
+background_image=pygame.image.load("assets/background.png")
 def averageFPS():
     return FPScpt/(time()-initTime)
 def distance(xA,yA,xB,yB):
@@ -24,13 +25,17 @@ def afficherScore(texteEnPlus,scoreAafficher):
 
 
 
-width ,height=800,600
+width ,height=900,600
 monEcran=pygame.display.set_mode((width ,height ))
 
 
 
 def game():
+
     print("[*]starting a new game")
+    main_theme=pygame.mixer.Sound('assets/sound_effects/main_theme.wav')
+    main_theme.play()
+
     slime=target(10,10,0,0)
     vie=10
     max_speed=5
@@ -43,14 +48,16 @@ def game():
 
     while jeu_en_cours==True:
         monEcran.fill((100,40,70))
+        monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
+
 
         if cycle%3000==0:
             touche=False#
             resultat=True
             monClic=False
-            slime.posx=randint(1,width)# width est la largeur de la fenétre
-            slime.posy=randint(1,height)# height est la hauteur de la fenetre
-
+            slime.posx=randint(1,width-20)# width est la largeur de la fenétre corriger pour eviter un bug d'affichage
+            slime.posy=randint(1,height-20)# height est la hauteur de la fenetre
+            slime.dead=False
             rayon=randint(50,400)
             slime.sizex=rayon
             slime.sizey=rayon
@@ -73,13 +80,13 @@ def game():
 
         #mouseX,mouseY=pygame.mouse.get_pos()
         mouseX,mouseY=pygame.mouse.get_pos()
-        if slime.posx<mouseX<slime.posx+rayon and slime.posy<mouseY<slime.posy+rayon and monClic and resultat:
+        if slime.posx<mouseX<slime.posx+rayon-5 and slime.posy<mouseY<slime.posy+rayon-5 and monClic and resultat:
             if not touche:
                 score+=1
             touche=True
 
             resultat=False
-            cycle=3000
+
             print("[*]score ",score)
 
 
@@ -103,6 +110,12 @@ def game():
         if not touche:
             #pygame.draw.rect(monEcran,(255, 255, 255),(posx,posy,rayon,rayon))
             slime.update(monEcran)
+        if touche:
+            slime.dead=True
+            slime.update(monEcran)
+            if slime.dead==False:
+                cycle=3000
+
 
         #a corriger
         for evenement in pygame.event.get():# Boucle sur les evenements
@@ -127,6 +140,8 @@ def menu():
     clicked=False
     while True:
         monEcran.fill((100,40,70))
+        monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
+
         play_button.posx=width/2-play_button.sizex/2
         play_button.posy=height/2-play_button.sizey/2+100
         play_button.sizex=300
