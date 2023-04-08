@@ -13,14 +13,14 @@ monClic=False
 FPScpt=0
 initTime=time()
 pygame.init()
-maPolice = pygame.font.SysFont('arial', 30) #Chargement de la police dans la variable maPolice
+maPolice= pygame.font.Font('fonts/pixel-font.TTF', 30) #Chargement de la police dans la variable maPolice
 background_image=pygame.image.load("assets/background.png")
 def averageFPS():
     return FPScpt/(time()-initTime)
 def distance(xA,yA,xB,yB):
     return math.sqrt((xB-xA)**2+(yB-yA)**2)
 def afficherScore(texteEnPlus,scoreAafficher):
-    affichage=maPolice.render ( texteEnPlus+" score : "+str(scoreAafficher),  1,(0,255,255) )#Creation de l'étiquette "Gagné"
+    affichage=maPolice.render ( texteEnPlus+" score : "+str(scoreAafficher),  1,(255,255,255) )#Creation de l'étiquette "Gagné"
     monEcran.blit(affichage, (10,10))
 
 
@@ -63,7 +63,7 @@ def game():
             slime.sizey=rayon
             #pallier de vitesse
             if score%5==0:
-                max_speed+=1
+                max_speed+=4
 
         if cycle%500==0:
             #definition des vitesse de deplacement de la taupe
@@ -80,7 +80,7 @@ def game():
 
         #mouseX,mouseY=pygame.mouse.get_pos()
         mouseX,mouseY=pygame.mouse.get_pos()
-        if slime.posx<mouseX<slime.posx+rayon-5 and slime.posy<mouseY<slime.posy+rayon-5 and monClic and resultat:
+        if slime.posx+10<mouseX<slime.posx+rayon-10 and slime.posy+15<mouseY<slime.posy+rayon-10 and monClic and resultat:
             if not touche:
                 score+=1
             touche=True

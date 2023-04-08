@@ -34,8 +34,12 @@ class target:
                 self.counter=0
                 self.current_anim_frame=-1
                 self.dead=False
-            if self.counter%15==0:
-                self.current_anim_frame+=1
+            if self.current_anim_frame<=2:
+                if self.counter%30==0:
+                    self.current_anim_frame+=1
+            else:
+                if self.counter%15==0:
+                    self.current_anim_frame+=1
 
         else:
             i=1
