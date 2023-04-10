@@ -1,4 +1,57 @@
 import pygame
+from random import randint
+
+class death_particle:
+    """le petit machin quand le slime il meurt death_particle."""
+
+    def __init__(self, posx,posy):
+        self.posx=posx
+        self.posy=posy
+        self.img= pygame.image.load("assets/particles-"+str(randint(1,3))+".png")#selection aleatoir de sprite de la particule
+        self.current_anim_frame=0
+        self.current_travel_step=0
+        self.counter=0
+        self.step_x=round((self.posx+randint(1,14))/10) #il doit parcourir ca a chaque fois pour arriver jusqu'à la bar de score
+        self.step_y=round((self.posy+randint(1,14))/10)
+        self.exploding_sprites=[]
+        self.exploding_sprites.append(pygame.image.load("assets/particles-explo1.png"))
+        self.exploding_sprites.append(pygame.image.load("assets/particles-explo2.png"))
+        self.finished=False
+    def update(self,screen):
+        self.counter+=1
+        print("OH U MF")
+
+        print("[*]travel setp :"+str(self.current_travel_step))
+        if not self.current_travel_step==10:
+            print('plsss')
+            if self.counter%15==0:
+                self.posx-=self.step_x
+                self.posy-=self.step_y
+                self.current_travel_step+=1
+
+            self.sprite=pygame.transform.scale(self.img,(50,50)).convert_alpha()
+
+            print("[*]blitted")
+
+
+        else:
+            print("why")
+            if not self.current_anim_frame==2:
+                self.sprite=pygame.transform.scale(self.exploding_sprites[self.current_anim_frame],(100,100)).convert_alpha()
+                if self.counter%20==0:
+                    self.current_anim_frame+=1
+                #screen.blit(self.sprite, (self.posx,self.posy))
+                print("[*]blitted")
+
+            else:
+                self.finished=True
+        screen.blit(self.sprite, (self.posx,self.posy))
+
+
+
+
+
+
 
 class target:
     """the slime basically"""
@@ -34,6 +87,7 @@ class target:
                 self.counter=0
                 self.current_anim_frame=-1
                 self.dead=False
+
             if self.current_anim_frame<=2:
                 if self.counter%30==0:
                     self.current_anim_frame+=1

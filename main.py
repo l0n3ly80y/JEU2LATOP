@@ -45,6 +45,7 @@ def game():
     texteScore=""
     jeu_en_cours=True
     cycle=0
+    monClic=False
 
     while jeu_en_cours==True:
         monEcran.fill((100,40,70))
@@ -52,6 +53,11 @@ def game():
 
 
         if cycle%3000==0:
+            #pour l'animation des particules qui vont vers la bar de score
+            particles=[]
+            dejaPaticule=False
+            particules_finis=0
+            ####
             touche=False#
             resultat=True
             monClic=False
@@ -73,10 +79,9 @@ def game():
         if cycle%100==0:
             slime.posx+=xspeed
             slime.posy+=yspeed
-
-
-
         cycle=cycle+1
+
+
 
         #mouseX,mouseY=pygame.mouse.get_pos()
         mouseX,mouseY=pygame.mouse.get_pos()
@@ -111,6 +116,35 @@ def game():
             #pygame.draw.rect(monEcran,(255, 255, 255),(posx,posy,rayon,rayon))
             slime.update(monEcran)
         if touche:
+            if not dejaPaticule:
+                particles_fini=0
+                particles=[]
+                for i in range(10):
+                    particles.append(death_particle(slime.posx+randint(-40,40),slime.posy+randint(-40,40)))
+                print("[*] particles :")
+                print(particles)
+                dejaPaticule=True
+            else:
+                print("[*]loading particles")
+                print(particles)
+                for i in particles:
+                    print(i)
+                    i.update(monEcran)
+                    print('updated ?')
+                    if i.finished:
+                        print("idk")
+                        particules_finis+=1
+                        if particles_fini==10:
+                            print("[*] tout est fini")
+                            particles=[]
+                            particles_fini=0
+                            dejaPaticule=False
+                    else:
+                        print("[*] all particles aren't done")
+
+
+
+
             slime.dead=True
             slime.update(monEcran)
             if slime.dead==False:
@@ -129,6 +163,7 @@ def game():
         #include following in the while loop
         pygame.display.update()
 
+
 #that's what's going on at the beginning of the script, basically the game menu
 def menu():
     #ca ce le theme du jeu
@@ -138,6 +173,7 @@ def menu():
     pygame.init()
     play_button=playButton(100,100,0,0)
     clicked=False
+    monClic=False
     while True:
         monEcran.fill((100,40,70))
         monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
