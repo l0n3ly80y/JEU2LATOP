@@ -51,6 +51,11 @@ def game():
         monEcran.fill((100,40,70))
         monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
 
+        if vie==0:
+            main_theme.stop()
+            menu()
+            break
+
 
         if cycle%3000==0:
             #pour l'animation des particules qui vont vers la bar de score
@@ -212,6 +217,8 @@ def menu():
                 resultat=True
             else:
                 monClic=False
+
+
         #include following in the while loop
         pygame.display.update()
 if __name__ == '__main__':
