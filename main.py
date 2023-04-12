@@ -3,7 +3,7 @@ import pygame
 import math
 import os
 from spriteloader import *
-from time import sleep
+from time import time
 #might be useful later
 
 
@@ -14,7 +14,8 @@ FPScpt=0
 initTime=time()
 pygame.init()
 maPolice= pygame.font.Font('fonts/pixel-font.TTF', 30) #Chargement de la police dans la variable maPolice
-background_image=pygame.image.load("assets/background.png")
+police_Titre= pygame.font.Font('fonts/pixel-font.TTF', 50)
+
 def averageFPS():
     return FPScpt/(time()-initTime)
 def distance(xA,yA,xB,yB):
@@ -30,13 +31,23 @@ monEcran=pygame.display.set_mode((width ,height ))
 
 
 
-def game():
+def game(mexico):
+    sblouch_sound=pygame.mixer.Sound('assets/sound_effects/sblouch.wav')
+    if mexico:
+        background_image=pygame.image.load("assets/mexico-background-lite.png")
+    else:
+        background_image=pygame.image.load("assets/background.png")
 
     print("[*]starting a new game")
-    main_theme=pygame.mixer.Sound('assets/sound_effects/main_theme.wav')
+    if mexico:
+        main_theme=pygame.mixer.Sound('assets/sound_effects/MEXICO.wav')
+    else:
+        main_theme=pygame.mixer.Sound('assets/sound_effects/main_theme.wav')
+    main_theme.set_volume(0.5)
     main_theme.play()
+    theme_initTime=time()
+    slime=target(10,10,0,0,mexico)
 
-    slime=target(10,10,0,0)
     vie=10
     max_speed=5
     touche=False
@@ -53,12 +64,13 @@ def game():
 
         if vie==0:
             main_theme.stop()
-            menu()
+            menu(True)
             break
 
 
         if cycle%3000==0:
             #pour l'animation des particules qui vont vers la bar de score
+            sblouch_triggered=False
             particles=[]
             dejaPaticule=False
             particules_finis=0
@@ -118,10 +130,10 @@ def game():
         afficherScore("vie : "+str(vie),score)
         #affichage des sprites
         if not touche:
-            #pygame.draw.rect(monEcran,(255, 255, 255),(posx,posy,rayon,rayon))
             slime.update(monEcran)
         if touche:
             if not dejaPaticule:
+                sblouch_sound.play()
                 particles_fini=0
                 particles=[]
                 for i in range(10):
@@ -144,9 +156,21 @@ def game():
                             particles=[]
                             particles_fini=0
                             dejaPaticule=False
+                            sblouch_sound.stop()
                     else:
                         print("[*] all particles aren't done")
 
+            #relencement du theme si il est fini
+            if mexico:
+                if time()-theme_initTime>114:
+                    main_theme.stop()
+                    main_theme.play()
+                    theme_initTime=time()
+            else:
+                if time()-theme_initTime>180:
+                    main_theme.stop()
+                    main_theme.play()
+                    theme_initTime=time()
 
 
 
@@ -170,24 +194,39 @@ def game():
 
 
 #that's what's going on at the beginning of the script, basically the game menu
-def menu():
+def menu(dead):
+    background_image=pygame.image.load("assets/background.png")
     #ca ce le theme du jeu
+    mexique=False
     menu_theme=pygame.mixer.Sound('assets/sound_effects/menu_theme.wav')
     menu_theme.play()
     initTime=time()
     pygame.init()
     play_button=playButton(100,100,0,0)
+    mexico_button=EspagnolButton(300,300,height/2+300,width/2-300/2)
     clicked=False
     monClic=False
     while True:
+
+
         monEcran.fill((100,40,70))
         monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
+        if dead:
+            gameover =police_Titre.render ("GAME OVER",  1,(255,0,0) )
+            monEcran.blit(gameover,(width/2-200,height/2-height/4))
+            print("[affichage du titre]")
+        else:
+            titre =pygame.image.load("assets/Titre.png")
+            #monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
+            monEcran.blit(pygame.transform.scale(titre,(600,600)),(width/2-300,height/2-height/4-200))
+            print("[affichage du titre]")
 
         play_button.posx=width/2-play_button.sizex/2
         play_button.posy=height/2-play_button.sizey/2+100
         play_button.sizex=300
         play_button.sizey=300
         play_button.update(monEcran)
+        mexico_button.update(monEcran)
         mouseX,mouseY=pygame.mouse.get_pos()
         if play_button.isTouched(mouseX,mouseY):# and monClic and resultat:
             play_button.state="hover"
@@ -205,7 +244,13 @@ def menu():
                 print("[*] cycle since click :",cycle_since_click)
             if cycle_since_click>300:
                 menu_theme.stop()
-                game()
+                game(mexique)
+        if mexico_button.isTouched(mouseX,mouseY) and not mexico_button.state=="clicked":
+            play_button.state="hover"
+            if monClic:
+                mexico_button.state="clicked"
+                mexique=True
+
 
         for evenement in pygame.event.get():# Boucle sur les evenements
             if evenement.type==pygame.QUIT: #Si l'evenement est quitter
@@ -222,7 +267,7 @@ def menu():
         #include following in the while loop
         pygame.display.update()
 if __name__ == '__main__':
-    menu()
+    menu(False)
 
 
 
