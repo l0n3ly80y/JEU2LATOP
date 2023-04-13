@@ -48,7 +48,7 @@ def game(mexico):
     theme_initTime=time()
     slime=target(10,10,0,0,mexico)
 
-    vie=10
+    vie=3
     max_speed=5
     touche=False
     resultat=False
