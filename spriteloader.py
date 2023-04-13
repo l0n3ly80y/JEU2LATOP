@@ -4,10 +4,14 @@ from random import randint
 class death_particle:
     """le petit machin quand le slime il meurt death_particle."""
 
-    def __init__(self, posx,posy):
+    def __init__(self, posx,posy,mexico):
+        self.mexico=mexico
         self.posx=posx
         self.posy=posy
-        self.img= pygame.image.load("assets/particles-"+str(randint(1,3))+".png")#selection aleatoir de sprite de la particule
+        if self.mexico:
+            self.img= pygame.image.load("assets/tacos.png")
+        else:
+            self.img= pygame.image.load("assets/particles-"+str(randint(1,3))+".png")#selection aleatoir de sprite de la particule
         self.current_anim_frame=0
         self.current_travel_step=0
         self.counter=0

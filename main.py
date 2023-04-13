@@ -15,6 +15,12 @@ initTime=time()
 pygame.init()
 maPolice= pygame.font.Font('fonts/pixel-font.TTF', 30) #Chargement de la police dans la variable maPolice
 police_Titre= pygame.font.Font('fonts/pixel-font.TTF', 50)
+random_sentences=[
+"90% des commits effectués hier soir !",
+"l'idée n'as pas été copié a minecraft !",
+"On a eu la flemme de faire d'autre langue donc vous avez un mode mexique",
+"Featuring David Goodenough !"
+]
 
 def averageFPS():
     return FPScpt/(time()-initTime)
@@ -26,7 +32,7 @@ def afficherScore(texteEnPlus,scoreAafficher):
 
 
 
-width ,height=900,600
+width ,height=1000,600
 monEcran=pygame.display.set_mode((width ,height ))
 
 
@@ -34,7 +40,7 @@ monEcran=pygame.display.set_mode((width ,height ))
 def game(mexico):
     sblouch_sound=pygame.mixer.Sound('assets/sound_effects/sblouch.wav')
     if mexico:
-        background_image=pygame.image.load("assets/mexico-background-lite.png")
+        background_image=pygame.image.load("assets/mexico-background.png")
     else:
         background_image=pygame.image.load("assets/background.png")
 
@@ -137,7 +143,7 @@ def game(mexico):
                 particles_fini=0
                 particles=[]
                 for i in range(10):
-                    particles.append(death_particle(slime.posx+randint(-40,40),slime.posy+randint(-40,40)))
+                    particles.append(death_particle(slime.posx+randint(-40,40),slime.posy+randint(-40,40),mexico))
                 print("[*] particles :")
                 print(particles)
                 dejaPaticule=True
@@ -195,6 +201,7 @@ def game(mexico):
 
 #that's what's going on at the beginning of the script, basically the game menu
 def menu(dead):
+
     background_image=pygame.image.load("assets/background.png")
     #ca ce le theme du jeu
     mexique=False
@@ -206,11 +213,18 @@ def menu(dead):
     mexico_button=EspagnolButton(300,300,height/2+300,width/2-300/2)
     clicked=False
     monClic=False
+    mexico_status =maPolice.render ("mode mexique activé",  1,(255,0,0) )
+    sentence=maPolice.render(random_sentences[randint(0,len(random_sentences)-1)],  1,(255,0,0) )
+
     while True:
+
 
 
         monEcran.fill((100,40,70))
         monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
+
+        if mexique:
+            monEcran.blit(mexico_status,(10,10))
         if dead:
             gameover =police_Titre.render ("GAME OVER",  1,(255,0,0) )
             monEcran.blit(gameover,(width/2-200,height/2-height/4))
@@ -218,8 +232,9 @@ def menu(dead):
         else:
             titre =pygame.image.load("assets/Titre.png")
             #monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
-            monEcran.blit(pygame.transform.scale(titre,(600,600)),(width/2-300,height/2-height/4-200))
+            monEcran.blit(pygame.transform.scale(titre,(800,800)),(width/2-400,height/2-height/4-400))
             print("[affichage du titre]")
+        monEcran.blit(sentence,(width/2-300,height/2-100))
 
         play_button.posx=width/2-play_button.sizex/2
         play_button.posy=height/2-play_button.sizey/2+100
@@ -246,7 +261,6 @@ def menu(dead):
                 menu_theme.stop()
                 game(mexique)
         if mexico_button.isTouched(mouseX,mouseY) and not mexico_button.state=="clicked":
-            play_button.state="hover"
             if monClic:
                 mexico_button.state="clicked"
                 mexique=True
