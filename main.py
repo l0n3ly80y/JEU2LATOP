@@ -227,7 +227,7 @@ def menu(dead):
             monEcran.blit(mexico_status,(10,10))
         if dead:
             gameover =police_Titre.render ("GAME OVER",  1,(255,0,0) )
-            monEcran.blit(gameover,(width/2-200,height/2-height/4))
+            monEcran.blit(gameover,(width/2-200,height/2-height/4-40))
             print("[affichage du titre]")
         else:
             titre =pygame.image.load("assets/Titre.png")
