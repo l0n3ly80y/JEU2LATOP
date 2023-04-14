@@ -4,12 +4,16 @@ from random import randint
 class death_particle:
     """le petit machin quand le slime il meurt death_particle."""
 
-    def __init__(self, posx,posy,mexico):
-        self.mexico=mexico
+    def __init__(self, posx,posy,gamemode):
+        self.gamemode=gamemode
         self.posx=posx
         self.posy=posy
-        if self.mexico:
+        if self.gamemode=="mexique":
             self.img= pygame.image.load("assets/tacos.png")
+        elif self.gamemode=="starship":
+            self.img = pygame.image.load("assets/explosion.png")
+        elif self.gamemode=="sea":
+            self.img = pygame.image.load("assets/BidonRadioactif.png")
         else:
             self.img= pygame.image.load("assets/particles-"+str(randint(1,3))+".png")#selection aleatoir de sprite de la particule
         self.current_anim_frame=0
@@ -60,15 +64,20 @@ class death_particle:
 class target:
     """the slime basically"""
 
-    def __init__(self, sizex,sizey, posx, posy,mexico):
-        self.mexico=mexico
+    def __init__(self, sizex,sizey, posx, posy,gamemode):
+        self.gamemode=gamemode
 
         self.sizex=sizex
         self.sizey=sizey
         self.posx=posx
         self.posy=posy
-        if self.mexico:
+        if self.gamemode=="mexique":
             self.img = pygame.image.load("assets/slime-mexico.png")
+        elif self.gamemode=="starship":
+
+            self.img = pygame.image.load("assets/starship.png")
+        elif self.gamemode=="sea":
+            self.img = pygame.image.load("assets/poisson.png")
         else:
             self.img = pygame.image.load("slime.png")#.convert_alpha()
         self.scaled_img=pygame.transform.scale(self.img,(self.sizex,self.sizey) )
@@ -189,6 +198,87 @@ class EspagnolButton:
     #size bias correction : y-30
     def isTouched(self,cursorx,cursory):
         if  self.posx<cursorx<self.posx+self.sizex and self.posy<cursory<self.posy+self.sizey-30:
+            return True
+        else:
+            return False
+
+
+class StarshipButton:
+    """button for the espagnol button"""
+
+    def __init__(self, sizex,sizey,posx,posy):
+        self.state="regular"
+        self.sizex=sizex
+        self.sizey=sizey
+        self.posx=posx
+        self.posy=posy
+        #loading the base sprite
+        self.img = pygame.image.load("assets/starship_button.png")#.convert_alpha()
+        self.scaled_img=pygame.transform.scale(self.img,(self.sizex,self.sizey) )
+        self.sprite=self.scaled_img.convert_alpha()
+        #loading the hover sprite
+        self.img_hover = pygame.image.load("assets/starship_button.png")#.convert_alpha()
+        #loading the clicked sprite
+        self.img_clicked = pygame.image.load("assets/starship_button_clicked.png")#.convert_alpha()
+        #We need to load the images first cuz it takes hella time so we don't wanna do it inside a while loop
+
+
+
+    def update(self,screen):
+        size=(self.sizex,self.sizey)
+        if self.state=="hover":
+            self.sprite=pygame.transform.scale(self.img_hover,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+        elif self.state=="regular":
+            #print("[*]regular")
+            self.sprite=pygame.transform.scale(self.img,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+        else:
+            self.sprite=pygame.transform.scale(self.img_clicked,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+    #size bias correction : y-30
+    def isTouched(self,cursorx,cursory):
+        if  self.posx<cursorx<self.posx+50 and self.posy<cursory<self.posy+50:
+            return True
+        else:
+            return False
+
+class SeaButton:
+    """button for the espagnol button"""
+
+    def __init__(self, sizex,sizey,posx,posy):
+        self.state="regular"
+        self.sizex=sizex
+        self.sizey=sizey
+        self.posx=posx
+        self.posy=posy
+        #loading the base sprite
+        self.img = pygame.image.load("assets/sea_button.png")#.convert_alpha()
+        self.scaled_img=pygame.transform.scale(self.img,(self.sizex,self.sizey) )
+        self.sprite=self.scaled_img.convert_alpha()
+        #loading the hover sprite
+        self.img_hover = pygame.image.load("assets/sea_button.png")#.convert_alpha()
+        #loading the clicked sprite
+        self.img_clicked = pygame.image.load("assets/sea_button_clicked.png")#.convert_alpha()
+        #We need to load the images first cuz it takes hella time so we don't wanna do it inside a while loop
+
+
+
+    def update(self,screen):
+        size=(self.sizex,self.sizey)
+        if self.state=="hover":
+            self.sprite=pygame.transform.scale(self.img_hover,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+        elif self.state=="regular":
+            #print("[*]regular")
+            self.sprite=pygame.transform.scale(self.img,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+        else:
+            self.sprite=pygame.transform.scale(self.img_clicked,size).convert_alpha()
+            screen.blit(self.sprite, (self.posx,self.posy))
+    #size bias correction : y-30
+    def isTouched(self,cursorx,cursory):
+        if  self.posx<cursorx<self.posx+100 and self.posy<cursory<self.posy+50:
             return True
         else:
             return False

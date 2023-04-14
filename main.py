@@ -9,6 +9,7 @@ from time import time
 
 #fps calculator
 from time import time
+nombreDeParties=0
 monClic=False
 FPScpt=0
 initTime=time()
@@ -18,8 +19,12 @@ police_Titre= pygame.font.Font('fonts/pixel-font.TTF', 50)
 random_sentences=[
 "90% des commits effectués hier soir !",
 "l'idée n'as pas été copié a minecraft !",
-"On a eu la flemme de faire d'autre langue donc vous avez un mode mexique",
-"Featuring David Goodenough !"
+"On a eu la flemme de faire d'autre langue ",
+"Featuring David Goodenough !",
+"en collab avec rafael mais il sait pas shhh",
+"pas tant de contenu mais plein de crossovers !",
+"l'esp du bouton jaune signifie mexique",
+"faraway sea mode marche pas faites 2 parties"
 ]
 
 def averageFPS():
@@ -36,23 +41,33 @@ width ,height=1000,600
 monEcran=pygame.display.set_mode((width ,height ))
 
 
-
-def game(mexico):
+nombreDeParties=0
+def game(gamemode):
     sblouch_sound=pygame.mixer.Sound('assets/sound_effects/sblouch.wav')
-    if mexico:
+    if gamemode=="mexique":
         background_image=pygame.image.load("assets/mexico-background.png")
+    elif gamemode=="starship":
+        background_image=pygame.image.load("assets/background_starship.jpg")
+    elif gamemode=="sea":
+        background_image=pygame.image.load("assets/baackground-sea.jpg")
+
     else:
         background_image=pygame.image.load("assets/background.png")
 
     print("[*]starting a new game")
-    if mexico:
+    if gamemode=="mexique":
         main_theme=pygame.mixer.Sound('assets/sound_effects/MEXICO.wav')
+    elif gamemode=="starship":
+        main_theme=pygame.mixer.Sound('assets/sound_effects/fight.mp3')
+    elif gamemode=="sea":
+        main_theme=pygame.mixer.Sound('assets/sound_effects/Playing_God_pixel.mp3')
+
     else:
         main_theme=pygame.mixer.Sound('assets/sound_effects/main_theme.wav')
     main_theme.set_volume(0.5)
     main_theme.play()
     theme_initTime=time()
-    slime=target(10,10,0,0,mexico)
+    slime=target(10,10,0,0,gamemode)
 
     vie=3
     max_speed=5
@@ -133,7 +148,10 @@ def game(mexico):
             print('[*] touche :',touche)
 
         #affichage du score
-        afficherScore("vie : "+str(vie),score)
+        if gamemode=="mexique":
+            afficherScore("vidas : "+str(vie),score)
+        else:
+            afficherScore("vie : "+str(vie),score)
         #affichage des sprites
         if not touche:
             slime.update(monEcran)
@@ -143,7 +161,7 @@ def game(mexico):
                 particles_fini=0
                 particles=[]
                 for i in range(10):
-                    particles.append(death_particle(slime.posx+randint(-40,40),slime.posy+randint(-40,40),mexico))
+                    particles.append(death_particle(slime.posx+randint(-40,40),slime.posy+randint(-40,40),gamemode))
                 print("[*] particles :")
                 print(particles)
                 dejaPaticule=True
@@ -167,7 +185,7 @@ def game(mexico):
                         print("[*] all particles aren't done")
 
             #relencement du theme si il est fini
-            if mexico:
+            if gamemode=="mexique":
                 if time()-theme_initTime>114:
                     main_theme.stop()
                     main_theme.play()
@@ -201,19 +219,27 @@ def game(mexico):
 
 #that's what's going on at the beginning of the script, basically the game menu
 def menu(dead):
-
+    global nombreDeParties
+    nombreDeParties+=1
+    sentence_jiggle_y_up=True
+    sentence_jiggle_y=0
+    gamemode=""
     background_image=pygame.image.load("assets/background.png")
     #ca ce le theme du jeu
-    mexique=False
     menu_theme=pygame.mixer.Sound('assets/sound_effects/menu_theme.wav')
     menu_theme.play()
     initTime=time()
     pygame.init()
     play_button=playButton(100,100,0,0)
     mexico_button=EspagnolButton(300,300,height/2+300,width/2-300/2)
+    starship_button=StarshipButton(70,70,10,60)
+    sea_button=SeaButton(100,70,10,500)
+    cycle=0
     clicked=False
     monClic=False
     mexico_status =maPolice.render ("mode mexique activé",  1,(255,0,0) )
+    starship_status =maPolice.render ("mode starship savior crossover activé",  1,(255,0,0) )
+    sea_status =maPolice.render ("mode faraway sea crossover activé ",  1,(255,0,0) )
     sentence=maPolice.render(random_sentences[randint(0,len(random_sentences)-1)],  1,(255,0,0) )
 
     while True:
@@ -223,18 +249,33 @@ def menu(dead):
         monEcran.fill((100,40,70))
         monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
 
-        if mexique:
+        if gamemode=="mexique":
             monEcran.blit(mexico_status,(10,10))
+        elif gamemode=="sea":
+            monEcran.blit(sea_status,(10,10))
+        elif gamemode=="starship":
+            monEcran.blit(starship_status,(10,10))
+
+
         if dead:
             gameover =police_Titre.render ("GAME OVER",  1,(255,0,0) )
             monEcran.blit(gameover,(width/2-200,height/2-height/4-40))
-            print("[affichage du titre]")
+            #print("[affichage du titre]")
         else:
             titre =pygame.image.load("assets/Titre.png")
             #monEcran.blit(pygame.transform.scale(background_image,(width,height)),(0,0))
             monEcran.blit(pygame.transform.scale(titre,(800,800)),(width/2-400,height/2-height/4-400))
             print("[affichage du titre]")
-        monEcran.blit(sentence,(width/2-300,height/2-100))
+        if cycle%2==0:
+            if sentence_jiggle_y_up:
+                sentence_jiggle_y+=1
+            else:
+                sentence_jiggle_y-=1
+
+        if cycle%20==0:
+            sentence_jiggle_y_up= not sentence_jiggle_y_up
+
+        monEcran.blit(sentence,(width/3+width/2-sentence.get_width()+130,height/2-100+sentence_jiggle_y))
 
         play_button.posx=width/2-play_button.sizex/2
         play_button.posy=height/2-play_button.sizey/2+100
@@ -242,6 +283,9 @@ def menu(dead):
         play_button.sizey=300
         play_button.update(monEcran)
         mexico_button.update(monEcran)
+        starship_button.update(monEcran)
+        if nombreDeParties>2:
+            sea_button.update(monEcran)
         mouseX,mouseY=pygame.mouse.get_pos()
         if play_button.isTouched(mouseX,mouseY):# and monClic and resultat:
             play_button.state="hover"
@@ -259,12 +303,22 @@ def menu(dead):
                 print("[*] cycle since click :",cycle_since_click)
             if cycle_since_click>300:
                 menu_theme.stop()
-                game(mexique)
+                game(gamemode)
         if mexico_button.isTouched(mouseX,mouseY) and not mexico_button.state=="clicked":
             if monClic:
-                mexico_button.state="clicked"
-                mexique=True
-
+                if gamemode=="":
+                    mexico_button.state="clicked"
+                    gamemode="mexique"
+        if starship_button.isTouched(mouseX,mouseY) and not starship_button.state=="clicked":
+            if monClic:
+                if gamemode=="":
+                    starship_button.state="clicked"
+                    gamemode="starship"
+        if sea_button.isTouched(mouseX,mouseY) and not sea_button.state=="clicked":
+            if monClic:
+                if gamemode=="":
+                    sea_button.state="clicked"
+                gamemode="sea"
 
         for evenement in pygame.event.get():# Boucle sur les evenements
             if evenement.type==pygame.QUIT: #Si l'evenement est quitter
@@ -277,11 +331,12 @@ def menu(dead):
             else:
                 monClic=False
 
-
+        cycle+=1
         #include following in the while loop
         pygame.display.update()
 if __name__ == '__main__':
     menu(False)
+    nombreDeParties+=1
 
 
 
